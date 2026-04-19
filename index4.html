@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Final Stable UI</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+            background: #222;
+            font-family: Arial;
+            color: white;
+        }
+
+        .container {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        h1 {
+            min-height: 40px;
+        }
+
+        /* 🔥 cursor nhấp nháy */
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            50%,
+            100% {
+                opacity: 1;
+            }
+
+            25%,
+            75% {
+                opacity: 0;
+            }
+        }
+
+        /* 🔥 fade-in buttons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .button-group.show {
+            opacity: 1;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        #yesBtn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        #noBtn {
+            background: #f44336;
+            color: white;
+            position: fixed;
+            transition: all 0.2s ease;
+            display: none;
+        }
+
+        #result {
+            margin-top: 30px;
+            font-size: 24px;
+            color: yellow;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1 id="question"></h1>
+
+        <div class="button-group" id="btnGroup">
+            <button id="yesBtn">Yes</button>
+            <div id="noPlaceholder">No</div>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <button id="noBtn">No</button>
+
+    <script>
+        const noBtn = document.getElementById("noBtn");
+        const placeholder = document.getElementById("noPlaceholder");
+        const yesBtn = document.getElementById("yesBtn");
+        const result = document.getElementById("result");
+        const questionEl = document.getElementById("question");
+        const btnGroup = document.getElementById("btnGroup");
+
+        let isMoving = false;
+
+        /* 🔥 typing câu hỏi */
+        const text = "Will you be my girlfriend?";
+        let i = 0;
+
+        function typeQuestion() {
+            const cursor = document.createElement("span");
+            cursor.className = "cursor";
+            cursor.innerText = "|";
+            questionEl.appendChild(cursor);
+
+            const typing = setInterval(() => {
+                cursor.remove();
+
+                questionEl.textContent += text.charAt(i);
+                i++;
+
+                questionEl.appendChild(cursor);
+
+                if (i >= text.length) {
+                    clearInterval(typing);
+                    cursor.remove();
+
+                    // 🔥 delay rồi fade-in nút
+                    setTimeout(() => {
+                        btnGroup.classList.add("show");
+
+                        noBtn.style.display = "block"; // 🔥 hiện nút Không
+
+                        initPosition();
+                    }, 500);
+                }
+            }, 70);
+        }
+
+        /* 🔥 đặt nút "Không" */
+        function initPosition() {
+            const rect = placeholder.getBoundingClientRect();
+            noBtn.style.left = rect.left + "px";
+            noBtn.style.top = rect.top + "px";
+            placeholder.style.visibility = "hidden";
+        }
+
+        /* 🔥 né chuột */
+        const padding = 80;
+
+        noBtn.addEventListener("mouseenter", () => {
+            if (isMoving) return;
+            isMoving = true;
+
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+
+            const minX = padding;
+            const maxX = window.innerWidth - btnWidth - padding;
+
+            const minY = padding;
+            const maxY = window.innerHeight - btnHeight - padding;
+
+            const randomX = Math.random() * (maxX - minX) + minX;
+            const randomY = Math.random() * (maxY - minY) + minY;
+
+            noBtn.style.left = randomX + "px";
+            noBtn.style.top = randomY + "px";
+
+            setTimeout(() => {
+                isMoving = false;
+            }, 200);
+        });
+
+        /* 🔥 click Có */
+        yesBtn.addEventListener("click", () => {
+            window.location.href = "index5.html"
+        });
+
+        /* 🔥 start */
+        document.addEventListener("DOMContentLoaded", typeQuestion);
+    </script>
+
+</body>
+
+</html>

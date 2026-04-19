@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Question Page</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            background: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            opacity: 1;
+            transition: opacity 0.6s ease;
+            overflow: hidden;
+        }
+
+        body.fade-out {
+            opacity: 0;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 32px;
+            min-height: 40px;
+        }
+
+        #result-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-height: 80px;
+            z-index: 100;
+            /* Đảm bảo chữ luôn hiện trên tim */
+        }
+
+        #result {
+            font-size: 24px;
+            color: yellow;
+            line-height: 1.5;
+        }
+
+        .btn-group {
+            opacity: 0;
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            transition: opacity 0.6s ease;
+        }
+
+        .btn-group.show {
+            opacity: 1;
+        }
+
+        .choice-btn {
+            padding: 10px 25px;
+            font-size: 18px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        /* Hiệu ứng tim đập cạnh chữ */
+        .heart-beat {
+            display: inline-block;
+            color: #ff4d4d;
+            font-size: 28px;
+            margin-left: 8px;
+            animation: beat 0.8s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes beat {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        /* 🔥 CSS TRÁI TIM CÓ CÁNH */
+        .winged-heart {
+            position: fixed;
+            bottom: -100px;
+            /* Xuất phát từ dưới đáy */
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Animation bay lên */
+            animation: floatUp 2s linear forwards;
+        }
+
+        .wings {
+            font-size: 20px;
+            color: #ffffff;
+            animation: flap 0.3s infinite alternate ease-in-out;
+        }
+
+        .heart-inner {
+            font-size: 24px;
+            margin: 0 2px;
+        }
+
+        @keyframes flap {
+            from {
+                transform: scaleY(1);
+            }
+
+            to {
+                transform: scaleY(0.5);
+            }
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-120vh) rotate(15deg);
+                opacity: 0;
+            }
+        }
+
+        #nextBtn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 12px 30px;
+            font-size: 18px;
+            background: rgba(17, 17, 17, 0.9);
+            color: #4CAF50;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 id="question"></h1>
+
+    <div class="btn-group" id="btnGroup">
+        <button class="choice-btn" onclick="answer(this)">Yes</button>
+        <button class="choice-btn" onclick="answer(this)">Sure</button>
+    </div>
+
+    <div id="result-container">
+        <div id="result"></div>
+    </div>
+
+    <button id="nextBtn" onclick="goNext()">Click to continue</button>
+
+    <script>
+        const questionText = "Do you love yourself?";
+        const questionEl = document.getElementById("question");
+        const btnGroup = document.getElementById("btnGroup");
+
+        let i = 0;
+        function typeQuestion() {
+            const typing = setInterval(() => {
+                questionEl.textContent += questionText.charAt(i);
+                i++;
+                if (i >= questionText.length) {
+                    clearInterval(typing);
+                    setTimeout(() => { btnGroup.classList.add("show"); }, 500);
+                }
+            }, 70);
+        }
+
+        document.addEventListener("DOMContentLoaded", typeQuestion);
+
+        function answer(btn) {
+            btnGroup.style.pointerEvents = "none";
+
+            const resultEl = document.getElementById("result");
+            resultEl.innerHTML = "";
+
+            const line1 = "Me too";
+            const line2 = "I also love you";
+
+            // Hiển thị Me too
+            const div1 = document.createElement("div");
+            resultEl.appendChild(div1);
+            let c1 = 0;
+            const t1 = setInterval(() => {
+                div1.textContent += line1.charAt(c1);
+                c1++;
+                if (c1 >= line1.length) {
+                    clearInterval(t1);
+                    // Hiển thị I also love you
+                    const div2 = document.createElement("div");
+                    div2.style.display = "inline-block";
+                    resultEl.appendChild(div2);
+                    let c2 = 0;
+                    const t2 = setInterval(() => {
+                        div2.textContent += line2.charAt(c2);
+                        c2++;
+                        if (c2 >= line2.length) {
+                            clearInterval(t2);
+                            // Kích hoạt hiệu ứng bão tim
+                            startHeartRain(div2);
+                        }
+                    }, 80);
+                }
+            }, 80);
+        }
+
+        function startHeartRain(parentEl) {
+            // Thêm tim đỏ đập cạnh chữ
+            const h = document.createElement("span");
+            h.className = "heart-beat";
+            h.innerHTML = "❤️";
+            parentEl.appendChild(h);
+
+            // 🔥 TẠO TIM BAY LIÊN TỤC
+            // Cứ 50ms tạo 1 cái (20 cái mỗi giây)
+            setInterval(createWingedHeart, 50);
+
+            // Hiện nút sau 1 giây
+            setTimeout(() => {
+                document.getElementById("nextBtn").style.display = "block";
+            }, 1000);
+        }
+
+        function createWingedHeart() {
+            const heartWrap = document.createElement("div");
+            heartWrap.className = "winged-heart";
+
+            // Nội dung tim có cánh
+            heartWrap.innerHTML = `
+                <span class="wings">ʚ</span>
+                <span class="heart-inner">❤️</span>
+                <span class="wings">ɞ</span>
+            `;
+
+            // Vị trí ngang ngẫu nhiên
+            heartWrap.style.left = Math.random() * 100 + "vw";
+
+            // Tốc độ bay ngẫu nhiên (từ 1.2s đến 2s - rất nhanh)
+            const duration = (Math.random() * 0.8 + 1.2) + "s";
+            heartWrap.style.animationDuration = duration;
+
+            // Ngẫu nhiên loại tim
+            const types = ["❤️", "💖", "💕", "💝", "💘"];
+            heartWrap.querySelector(".heart-inner").innerHTML = types[Math.floor(Math.random() * types.length)];
+
+            document.body.appendChild(heartWrap);
+
+            // Xóa bỏ element sau khi bay xong để tránh nặng máy
+            setTimeout(() => {
+                heartWrap.remove();
+            }, 2500);
+        }
+
+        function goNext() {
+            document.body.classList.add("fade-out");
+            setTimeout(() => {
+                window.location.href = "index4.html";
+            }, 600);
+        }
+    </script>
+</body>
+
+</html>

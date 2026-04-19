@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Responsive Images</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #111;
+            color: white;
+            font-family: Arial;
+            text-align: center;
+
+            opacity: 1;
+            transition: opacity 0.6s ease;
+        }
+
+        body.fade-out {
+            opacity: 0;
+        }
+
+        h1 {
+            margin: 30px 0 15px;
+            font-size: 28px;
+            min-height: 32px;
+        }
+
+        /* 🔥 cursor */
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            50%,
+            100% {
+                opacity: 1;
+            }
+
+            25%,
+            75% {
+                opacity: 0;
+            }
+        }
+
+        /* 🔥 ảnh fade-in */
+        img {
+            max-width: 100%;
+            max-height: 30vh;
+            height: auto;
+            width: auto;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 30px;
+
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        img.show {
+            opacity: 1;
+        }
+
+        /* 🔥 nút fade-in */
+        #nextBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+
+            padding: 12px 30px;
+            font-size: 18px;
+            background: transparent;
+            color: #4CAF50;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            cursor: pointer;
+
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+
+        #nextBtn.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #nextBtn:hover {
+            background: #4CAF50;
+            color: white;
+            box-shadow: 0 0 20px #4CAF50;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 id="text1"></h1>
+    <img id="img1" src="image1.jpg" alt="Earth">
+
+    <h1 id="text2"></h1>
+    <img id="img2" src="map.png" alt="Russia">
+
+    <button id="nextBtn" onclick="goNext()">Click to continue</button>
+
+    <script>
+        const text1 = "I want to talk about";
+        const text2 = "Not talk about";
+
+        const el1 = document.getElementById("text1");
+        const el2 = document.getElementById("text2");
+
+        const img1 = document.getElementById("img1");
+        const img2 = document.getElementById("img2");
+
+        const btn = document.getElementById("nextBtn");
+
+        const speed = 70;
+
+        /* 🔥 typing function reusable */
+        function typeText(element, text, callback) {
+            let i = 0;
+
+            const cursor = document.createElement("span");
+            cursor.className = "cursor";
+            cursor.innerText = "|";
+            element.appendChild(cursor);
+
+            const typing = setInterval(() => {
+                cursor.remove();
+
+                element.textContent += text.charAt(i);
+                i++;
+
+                element.appendChild(cursor);
+
+                if (i >= text.length) {
+                    clearInterval(typing);
+                    cursor.remove();
+
+                    setTimeout(callback, 500); // delay nhẹ
+                }
+            }, speed);
+        }
+
+        /* 🔥 flow chạy tuần tự */
+        document.addEventListener("DOMContentLoaded", () => {
+
+            // bước 1: gõ text1
+            typeText(el1, text1, () => {
+
+                // bước 2: hiện ảnh 1
+                img1.classList.add("show");
+
+                setTimeout(() => {
+
+                    // bước 3: gõ text2
+                    typeText(el2, text2, () => {
+
+                        // bước 4: hiện ảnh 2
+                        img2.classList.add("show");
+
+                        // bước 5: hiện nút
+                        setTimeout(() => {
+                            btn.classList.add("show");
+                        }, 500);
+
+                    });
+
+                }, 500);
+
+            });
+
+        });
+
+        function goNext() {
+            document.body.classList.add("fade-out");
+
+            setTimeout(() => {
+                window.location.href = "index3.html";
+            }, 600);
+        }
+    </script>
+
+</body>
+
+</html>
