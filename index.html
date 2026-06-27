@@ -38,6 +38,15 @@
             color: red;
             animation: pulse 1s infinite;
             filter: drop-shadow(0 0 15px red);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .heart-icon img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
         }
 
         @keyframes pulse {
@@ -56,7 +65,7 @@
 
         p {
             color: white;
-            margin-top: 20px;
+            margin-top: 60px;
             font-family: 'Arial', sans-serif;
             letter-spacing: 2px;
             opacity: 0.8;
@@ -73,8 +82,8 @@
 <body>
 
     <div id="interaction-overlay">
-        <div class="heart-icon">❤️</div>
-        <p>Click the heart to start</p>
+        <div class="heart-icon"><img src="image1.jpg" alt="heart" style="max-width: 100%; height: auto;"></div>
+        <p>Click the image to start</p>
     </div>
 
     <audio id="bg-music" loop>
